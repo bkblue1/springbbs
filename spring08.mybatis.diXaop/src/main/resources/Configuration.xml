@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+        
+<!-- http://mybatis.github.io/mybatis-3/ko/configuration.html#settings  -->        
+<configuration> 
+
+    <!-- Model 클래스를 등록한다. -->
+    <typeAliases>
+        <typeAlias type="mybatis.model.ModelBook"       alias="ModelBook" />
+        
+        <typeAlias type="mybatis.model.ModelAttachfile" alias="ModelAttachfile" />
+        <typeAlias type="mybatis.model.ModelBoard"      alias="ModelBoard" />
+        <typeAlias type="mybatis.model.ModelArticle"    alias="ModelArticle" />
+        <typeAlias type="mybatis.model.ModelComments"   alias="ModelComments" />
+        
+        <typeAlias type="mybatis.model.ModelUser"       alias="ModelUser" />
+    </typeAliases>
+    
+
+    <!-- sql 이 저장되는 xml 파일 등록: 주의 사항은 경로로 설정해야 한다. -->
+    <mappers>
+        <mapper resource="mybatis/mapper/mapperBook.xml" />
+        <mapper resource="mybatis/mapper/mapperBoard.xml" />
+        <mapper resource="mybatis/mapper/mapperUser.xml" />
+    </mappers>
+    
+</configuration>

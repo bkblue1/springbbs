@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <table name="IDREPO">
+        <column>ENTITY</column>
+        <row>
+            <value>USER</value>
+        </row>
+        <row>
+            <value>DEAL</value>
+        </row>
+    </table>
+
+
+    <table name="USER">
+        <column>USER_ID</column>
+        <column>EMAIL</column>
+        <column>ENC_PASSWORD</column>
+        <column>NAME</column>
+        <column>EMAIL_AUTH_YN</column>
+        <column>AUTH_KEY</column>
+        <row>
+            <value>1</value>
+            <value>madvirus@madvirus.net</value>
+            <value>[enc]password</value>
+            <value>최범균</value>
+            <value>Y</value>
+            <value>testauthkey</value>
+        </row>
+    </table>
+</dataset>

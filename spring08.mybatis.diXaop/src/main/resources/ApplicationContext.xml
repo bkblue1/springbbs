@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+        
+        
+    <mvc:annotation-driven/>     
+    
+    <context:component-scan base-package="mybatis.dao" /> 
+    <context:component-scan base-package="mybatis.service" />
+     
+<!-- 
+    <bean id="sampleService2" class="mybatis.service.ServiceBook">
+        <property name="session" ref="sqlSession" />
+        <property name="dao"     ref="daobook" />
+    </bean>
+    
+    <bean id="daobook" class="mybatis.dao.DaoBook">
+        <property name="session" ref="sqlSession" />
+    </bean>
+-->  
+    
+    <!-- 커넥션 설정 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName"            value="oracle.jdbc.driver.OracleDriver" />
+        <property name="url"                        value="jdbc:oracle:thin:@//localhost:1521/pdborcl" />
+        <property name="username"                   value="tester1" />
+        <property name="password"                   value="1234" />  
+             
+        <property name="defaultAutoCommit"          value="true"/> 
+        <property name="poolPreparedStatements"     value="true"/>
+        <property name="cacheState"                 value="true"/>
+    </bean>
+    
+    
+    <!-- SessionFactory 설정 :: MyBatis가 사용할 Database에 연결하도록 설정 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource"         ref="dataSource" />
+        <property name="configLocation"     value="classpath:Configuration.xml" />
+        
+        <!-- mybatis 디렉토리에 xml 파일만 추가해주면 알아서 xml내의 쿼리 자동 인식 -->
+        <!-- <property name="mapperLocations"    value="classpath*:mybatis/**/mapper*.xml" />  -->
+    </bean>
+ 
+    <!-- MyBatis의 CRUD 템플릿을 사용할 수 있도록 설정 -->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" scope="singleton">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean>
+
+
+    <!-- 트랜잭션 설정 -->
+    <bean id="txManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="serviceOperation" expression="execution(public * *..*Service*.*(..))" />
+        <aop:advisor  id="transactionAdvisor" advice-ref="txAdvice"  pointcut-ref="serviceOperation" />
+    </aop:config>
+    
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="get*"     read-only="true" />
+            <tx:method name="*insert*" rollback-for="Exception" propagation="REQUIRED" />
+            <tx:method name="*update*" rollback-for="Exception" propagation="REQUIRED" />
+            <tx:method name="delete*"  rollback-for="Exception" propagation="REQUIRED" />
+            <tx:method name="trans*"   rollback-for="Exception" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+
+</beans>
